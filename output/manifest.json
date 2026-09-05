@@ -1,0 +1,297 @@
+{
+  "units": "mm",
+  "parameters": {
+    "crank_radius": 30,
+    "rod_length": 120,
+    "angle_deg": 45
+  },
+  "stroke_mm": 60,
+  "assembly": "assembly.step",
+  "parts": [
+    {
+      "id": "P01_base",
+      "name_ja": "ベース",
+      "quantity": 1,
+      "material": "A6061-T6",
+      "process": "フライス・穴あけ・M5/M6タップ",
+      "purchased": false,
+      "step": "parts/P01_base.step",
+      "bbox_mm": [
+        250.0,
+        120.0,
+        14.0
+      ],
+      "volume_mm3": 414638.9543186484
+    },
+    {
+      "id": "P02_guide_rail",
+      "name_ja": "押さえ付きガイド",
+      "quantity": 2,
+      "material": "A6061-T6",
+      "process": "フライス・段加工・座ぐり",
+      "purchased": false,
+      "step": "parts/P02_guide_rail.step",
+      "bbox_mm": [
+        110.0,
+        17.0,
+        25.299999999999997
+      ],
+      "volume_mm3": 33685.07266471861
+    },
+    {
+      "id": "P03_end_stop",
+      "name_ja": "抜け止め",
+      "quantity": 2,
+      "material": "A6061-T6",
+      "process": "フライス・穴あけ・座ぐり",
+      "purchased": false,
+      "step": "parts/P03_end_stop.step",
+      "bbox_mm": [
+        12.0,
+        56.0,
+        8.0
+      ],
+      "volume_mm3": 4550.551505427728
+    },
+    {
+      "id": "P04_crank_disk",
+      "name_ja": "クランク円板",
+      "quantity": 1,
+      "material": "A6061-T6",
+      "process": "旋削・フライス・M5タップ",
+      "purchased": false,
+      "step": "parts/P04_crank_disk.step",
+      "bbox_mm": [
+        86.0,
+        86.0,
+        10.0
+      ],
+      "volume_mm3": 53269.106833656326
+    },
+    {
+      "id": "P05_connecting_rod",
+      "name_ja": "連接棒",
+      "quantity": 1,
+      "material": "A6061-T6",
+      "process": "フライス・ブッシュ穴仕上げ",
+      "purchased": false,
+      "step": "parts/P05_connecting_rod.step",
+      "bbox_mm": [
+        140.0,
+        20.0,
+        6.0
+      ],
+      "volume_mm3": 14927.787565803086
+    },
+    {
+      "id": "P06_slider",
+      "name_ja": "スライダ",
+      "quantity": 1,
+      "material": "黄銅",
+      "process": "フライス・摺動面仕上げ・M5タップ",
+      "purchased": false,
+      "step": "parts/P06_slider.step",
+      "bbox_mm": [
+        32.0,
+        30.0,
+        24.349999999999994
+      ],
+      "volume_mm3": 21493.713868031802
+    },
+    {
+      "id": "P07_main_post",
+      "name_ja": "固定中心軸",
+      "quantity": 1,
+      "material": "S45C",
+      "process": "旋削・軸径仕上げ・貫通穴",
+      "purchased": false,
+      "step": "parts/P07_main_post.step",
+      "bbox_mm": [
+        22.0,
+        22.0,
+        24.5
+      ],
+      "volume_mm3": 5724.594425408053
+    },
+    {
+      "id": "P08_joint_post",
+      "name_ja": "連接棒用段付き軸",
+      "quantity": 2,
+      "material": "S45C",
+      "process": "旋削・軸径仕上げ・貫通穴",
+      "purchased": false,
+      "step": "parts/P08_joint_post.step",
+      "bbox_mm": [
+        16.0,
+        16.0,
+        15.3
+      ],
+      "volume_mm3": 1762.7280029751482
+    },
+    {
+      "id": "P09_grip_post",
+      "name_ja": "握り用段付き軸",
+      "quantity": 1,
+      "material": "S45C",
+      "process": "旋削・軸径仕上げ・貫通穴",
+      "purchased": false,
+      "step": "parts/P09_grip_post.step",
+      "bbox_mm": [
+        12.0,
+        12.0,
+        24.3
+      ],
+      "volume_mm3": 706.9565218281282
+    },
+    {
+      "id": "P10_main_bush",
+      "name_ja": "中心軸ブッシュ",
+      "quantity": 1,
+      "material": "黄銅",
+      "process": "旋削・圧入後内径仕上げ",
+      "purchased": false,
+      "step": "parts/P10_main_bush.step",
+      "bbox_mm": [
+        16.0,
+        16.0,
+        10.0
+      ],
+      "volume_mm3": 872.0935542659124
+    },
+    {
+      "id": "P11_link_bush",
+      "name_ja": "連接棒ブッシュ",
+      "quantity": 2,
+      "material": "黄銅",
+      "process": "旋削・圧入後内径仕上げ",
+      "purchased": false,
+      "step": "parts/P11_link_bush.step",
+      "bbox_mm": [
+        12.0,
+        12.0,
+        6.0
+      ],
+      "volume_mm3": 373.96764966096055
+    },
+    {
+      "id": "P12_hand_grip",
+      "name_ja": "回転握り",
+      "quantity": 1,
+      "material": "黄銅",
+      "process": "旋削・内径仕上げ・端面C0.5",
+      "purchased": false,
+      "step": "parts/P12_hand_grip.step",
+      "bbox_mm": [
+        20.0,
+        20.0,
+        23.0
+      ],
+      "volume_mm3": 6035.944478616192
+    },
+    {
+      "id": "P13_retainer_M6",
+      "name_ja": "中心軸押さえ座金",
+      "quantity": 1,
+      "material": "鋼",
+      "process": "旋削・厚さ仕上げ",
+      "purchased": false,
+      "step": "parts/P13_retainer_M6.step",
+      "bbox_mm": [
+        18.0,
+        18.0,
+        1.6
+      ],
+      "volume_mm3": 352.4112975090886
+    },
+    {
+      "id": "P14_retainer_M5",
+      "name_ja": "小軸押さえ座金",
+      "quantity": 3,
+      "material": "鋼",
+      "process": "旋削・厚さ仕上げ",
+      "purchased": false,
+      "step": "parts/P14_retainer_M5.step",
+      "bbox_mm": [
+        15.0,
+        15.0,
+        1.0
+      ],
+      "volume_mm3": 152.95629232165308
+    },
+    {
+      "id": "H_M6x40",
+      "name_ja": "六角穴付きボルト M6×40",
+      "quantity": 1,
+      "material": "鋼・市販品",
+      "process": "購入（ねじ山省略の参考形状）",
+      "purchased": true,
+      "step": "hardware_reference/H_M6x40.step",
+      "bbox_mm": [
+        10.0,
+        10.0,
+        46.0
+      ],
+      "volume_mm3": 1537.2603480469616
+    },
+    {
+      "id": "H_M5x30",
+      "name_ja": "六角穴付きボルト M5×30",
+      "quantity": 6,
+      "material": "鋼・市販品",
+      "process": "購入（ねじ山省略の参考形状）",
+      "purchased": true,
+      "step": "hardware_reference/H_M5x30.step",
+      "bbox_mm": [
+        8.5,
+        8.5,
+        35.0
+      ],
+      "volume_mm3": 838.1326929240371
+    },
+    {
+      "id": "H_M5x12",
+      "name_ja": "六角穴付きボルト M5×12",
+      "quantity": 4,
+      "material": "鋼・市販品",
+      "process": "購入（ねじ山省略の参考形状）",
+      "purchased": true,
+      "step": "hardware_reference/H_M5x12.step",
+      "bbox_mm": [
+        8.5,
+        8.5,
+        17.0
+      ],
+      "volume_mm3": 484.70351939518537
+    },
+    {
+      "id": "H_M5x25",
+      "name_ja": "六角穴付きボルト M5×25",
+      "quantity": 1,
+      "material": "鋼・市販品",
+      "process": "購入（ねじ山省略の参考形状）",
+      "purchased": true,
+      "step": "hardware_reference/H_M5x25.step",
+      "bbox_mm": [
+        8.5,
+        8.5,
+        30.0
+      ],
+      "volume_mm3": 739.9579224993561
+    },
+    {
+      "id": "H_M5x50",
+      "name_ja": "六角穴付きボルト M5×50",
+      "quantity": 1,
+      "material": "鋼・市販品",
+      "process": "購入（ねじ山省略の参考形状）",
+      "purchased": true,
+      "step": "hardware_reference/H_M5x50.step",
+      "bbox_mm": [
+        8.5,
+        8.5,
+        55.0
+      ],
+      "volume_mm3": 1230.8317746227613
+    }
+  ]
+}

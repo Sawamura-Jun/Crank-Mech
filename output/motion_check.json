@@ -1,0 +1,36 @@
+{
+  "parameters": {
+    "crank_radius": 30,
+    "rod_length": 120,
+    "angle_deg": 45
+  },
+  "method": "BRep common volume > 1e-5 mm3; nominal geometry",
+  "angles_deg": [
+    0,
+    15,
+    30,
+    45,
+    60,
+    75,
+    90,
+    105,
+    120,
+    135,
+    150,
+    165,
+    180,
+    195,
+    210,
+    225,
+    240,
+    255,
+    270,
+    285,
+    300,
+    315,
+    330,
+    345
+  ],
+  "collisions": [],
+  "continuous_collision_proof": false
+}

@@ -1,0 +1,78 @@
+# Python の仮想環境・ビルド生成物
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+release/
+
+# テスト・解析キャッシュと実行結果（テストコード自体は公開する）
+.pytest_cache/
+.pytest_tmp/
+.pytest_tmp*/
+pytest-of-*/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.log
+
+# 個人設定・認証情報（テンプレートは公開可能）
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.key
+*.p12
+*.pfx
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+*.tmp
+*.bak
+
+# 開発用指示・作業記録
+AGENTS.md
+.codex/
+.agents/
+/VALIDATION.md
+/work/
+/tmp/
+
+# 別条件の試作出力と配布用アーカイブ
+/output_*/
+/*.zip
+/*.tar.gz
+/*.7z
+
+# 標準設計の output/ は公開成果物だけを許可する。
+# output/ 自体を除外すると、内部の再包含ができなくなるため /* を使う。
+/output/*
+!/output/assembly.step
+!/output/assembly_preview.png
+!/output/assembly_top.png
+!/output/preview.html
+!/output/BOM_JP.md
+!/output/BOM_EN.md
+!/output/manifest.json
+!/output/motion_check.json
+!/output/parts/
+/output/parts/*
+!/output/parts/*.step
+!/output/hardware_reference/
+/output/hardware_reference/*
+!/output/hardware_reference/*.step

@@ -1,0 +1,6 @@
+cadquery==2.8.0
+cadquery-ocp==7.9.3.1.1
+# Windows / Python 3.11でnloptとの終了時DLL競合を避ける検証済みの組み合わせ。
+casadi==3.6.7
+nlopt==2.11.0
+pytest==9.1.1

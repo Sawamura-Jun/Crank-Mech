@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Educational Slider–Crank Mechanism | Machined Metal Model</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#edf1f4;color:#172d3b;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+header{padding:22px 30px 18px;background:#fff;border-bottom:1px solid #d5dfe6}h1{font-size:24px;margin:6px 0}header p{margin:6px 0 0;color:#536977;font-size:13px}.eyebrow{font-size:11px;letter-spacing:.13em;color:#39789c}
+main{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:18px;padding:20px;max-width:1600px;margin:auto}
+.view{position:relative;background:#f7fafc;border:1px solid #d5dfe6;border-radius:12px;overflow:hidden;min-width:0}canvas{display:block;width:100%;height:560px;touch-action:none;cursor:grab}.hint{position:absolute;bottom:14px;left:20px;font-size:12px;color:#59717f;pointer-events:none}.badge{position:absolute;top:18px;left:20px;font-size:12px;color:#476374}.panel{background:#fff;padding:22px;border-radius:12px;border:1px solid #d5dfe6}h2{font-size:15px;margin:0 0 16px}.metric{padding:12px 0;border-bottom:1px solid #e4ebef;font-size:12px;color:#536977}.metric strong{display:block;font-size:24px;line-height:1.7;color:#172d3b;font-variant-numeric:tabular-nums}.metric small{font-size:12px;font-weight:400}label{display:block;margin-top:22px;font-size:13px}input{width:100%;margin:12px 0;accent-color:#186291}button{border:1px solid #b8cbd8;border-radius:6px;background:white;padding:9px 12px;color:#184c6d;cursor:pointer}button.primary{background:#186291;color:white;border-color:#186291}.buttons{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 18px}.legend{display:grid;gap:10px;font-size:12px;padding-top:18px;border-top:1px solid #e4ebef}.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px}.note{font-size:11px;line-height:1.8;color:#536977;margin-top:18px}footer{padding:0 22px 22px;font-size:12px;color:#536977}a{color:#186291}#error{position:absolute;top:40%;left:10%;right:10%;color:#9e2424}
+@media(max-width:800px){main{grid-template-columns:1fr;padding:12px}canvas{height:420px}.panel{padding:18px}.metrics{display:flex;gap:28px}.metric{flex:1}header{padding:18px}h1{font-size:20px}}
+</style>
+<header><div class="eyebrow">MECHANISM STUDY / METAL PARTS</div><h1>Educational Slider–Crank Mechanism</h1><p>A hand-operated tabletop model for exploring rotary and reciprocating motion.</p></header>
+<main><section class="view" aria-label="3D view of the mechanism"><canvas id="view" aria-label="Slider–crank mechanism. Drag to rotate the view."></canvas><span class="badge">CadQuery model preview · Units: mm</span><div class="hint">Drag to rotate · Scroll to zoom</div><div id="error" role="alert"></div></section>
+<aside class="panel"><h2>Mechanism motion</h2><div class="metrics"><div class="metric">Stroke<strong id="stroke"></strong></div><div class="metric">Slider displacement / from inner dead center<strong id="displacement"></strong></div></div><label for="angle">Crank angle <b id="angleText">45°</b></label><input id="angle" type="range" min="0" max="360" step="1" value="45"><div class="buttons"><button class="primary" id="play">Play</button><button id="reset">Reset to 45°</button></div><div class="buttons"><button id="top">Top view</button><button id="iso">Angled view</button></div><div class="legend"><span><i class="dot" style="background:#2165a6"></i>Crank disk & connecting rod / Aluminum</span><span><i class="dot" style="background:#c99b40"></i>Slider, bushings & hand grip / Brass</span><span><i class="dot" style="background:#adbcc9"></i>Base & guides / Aluminum</span><span><i class="dot" style="background:#626a73"></i>Stepped shafts & fasteners / Steel</span></div><p class="note">This view uses triangulated versions of the STEP geometry. Changing the angle previews the motion; the STEP file retains the angle used when it was generated.</p><a href="assembly.step" download>Download assembly STEP</a></aside></main>
+<footer>Base: 250 × 120 × 14 mm · <span id="dimensions"></span> · Threads are simplified. See <a href="../DESIGN_EN.md">DESIGN_EN.md</a> for machining tolerances and assembly instructions.</footer>
+<script>
+"use strict";
+const model = __MODEL_DATA__;
+const p=model.parameters, canvas=document.getElementById('view'), gl=canvas.getContext('webgl',{antialias:true,preserveDrawingBuffer:true});
+if(!gl){document.getElementById('error').textContent='WebGL is unavailable. Open the STEP file in a CAD application.';throw new Error('WebGL unavailable');}
+// Matrices use column-major order; all parts share the same coordinate system.
+function mul(a,b){let o=new Float32Array(16);for(let c=0;c<4;c++)for(let r=0;r<4;r++)for(let k=0;k<4;k++)o[c*4+r]+=a[k*4+r]*b[c*4+k];return o;}
+function rigid(x,y,z,a){let c=Math.cos(a),s=Math.sin(a);return new Float32Array([c,s,0,0,-s,c,0,0,0,0,1,0,x,y,z,1]);}
+function dot(a,b){return a.reduce((s,v,i)=>s+v*b[i],0)}
+function norm(a){let l=Math.hypot(...a);return a.map(v=>v/l)}
+function cross(a,b){return[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]]}
+function camera(eye,target){let z=norm(eye.map((v,i)=>v-target[i])),x=norm(cross([0,0,1],z)),y=cross(z,x);return new Float32Array([x[0],y[0],z[0],0,x[1],y[1],z[1],0,x[2],y[2],z[2],0,-dot(x,eye),-dot(y,eye),-dot(z,eye),1]);}
+function ortho(w,h){return new Float32Array([2/w,0,0,0,0,2/h,0,0,0,0,-2/1200,0,0,0,0,1]);}
+function shader(type,src){let s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(s));return s;}
+let program=gl.createProgram();
+gl.attachShader(program,shader(gl.VERTEX_SHADER,'attribute vec3 aPos;attribute vec3 aNormal;uniform mat4 uMvp;uniform mat4 uModel;varying vec3 vNormal;void main(){gl_Position=uMvp*vec4(aPos,1.0);vNormal=mat3(uModel)*aNormal;}'));
+gl.attachShader(program,shader(gl.FRAGMENT_SHADER,'precision mediump float;varying vec3 vNormal;uniform vec3 uColor;void main(){vec3 n=normalize(vNormal);if(!gl_FrontFacing)n=-n;float light=.48+.42*max(0.,dot(n,normalize(vec3(-.3,-.5,1.))))+.10*max(0.,dot(n,normalize(vec3(.7,.4,.5))));gl_FragColor=vec4(uColor*light,1.);}'));
+gl.linkProgram(program);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(program));gl.useProgram(program);
+const attrPos=gl.getAttribLocation(program,'aPos'),attrNormal=gl.getAttribLocation(program,'aNormal'),uMvp=gl.getUniformLocation(program,'uMvp'),uModel=gl.getUniformLocation(program,'uModel'),uColor=gl.getUniformLocation(program,'uColor');
+for(const mesh of Object.values(model.meshes)){for(const key of ['positions','normals']){mesh[key+'Buffer']=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,mesh[key+'Buffer']);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(mesh[key]),gl.STATIC_DRAW);}mesh.count=mesh.positions.length/3;}
+gl.enable(gl.DEPTH_TEST);gl.clearColor(.968,.980,.989,1);
+let azimuth=-Math.PI/2+.30,elevation=.82,zoom=1,angle=p.angle_deg,playing=false,last=0;
+const angleInput=document.getElementById('angle'),play=document.getElementById('play');
+document.getElementById('stroke').innerHTML=(2*p.crank_radius).toFixed(0)+' <small>mm</small>';
+document.getElementById('dimensions').textContent=`Crank radius: ${p.crank_radius} mm / Connecting rod centers: ${p.rod_length} mm`;
+function draw(){let dpr=Math.min(devicePixelRatio||1,2),w=Math.round(canvas.clientWidth*dpr),h=Math.round(canvas.clientHeight*dpr);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}gl.viewport(0,0,w,h);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+let target=[70,0,22],eye=[target[0]+400*Math.cos(elevation)*Math.cos(azimuth),400*Math.cos(elevation)*Math.sin(azimuth),target[2]+400*Math.sin(elevation)];let height=Math.max(170,300*h/w)*zoom,pv=mul(ortho(height*w/h,height),camera(eye,target));
+let t=angle*Math.PI/180,px=p.crank_radius*Math.cos(t),py=p.crank_radius*Math.sin(t),sx=px+Math.sqrt(p.rod_length**2-py**2),ra=Math.atan2(-py,sx-px);
+for(const item of model.instances){let [x,y,z]=item.position,a=item.angle*Math.PI/180;switch(item.motion){case'crank':a=t;break;case'pin':x=px;y=py;a=ra;break;case'slider':x=sx;if(item.name.startsWith('bush'))a=ra;break;case'rod':x=px;y=py;a=ra;break;}
+let mesh=model.meshes[item.part],m=rigid(x,y,z,a);gl.uniformMatrix4fv(uMvp,false,mul(pv,m));gl.uniformMatrix4fv(uModel,false,m);gl.uniform3fv(uColor,mesh.color);for(const [attr,key]of[[attrPos,'positions'],[attrNormal,'normals']]){gl.bindBuffer(gl.ARRAY_BUFFER,mesh[key+'Buffer']);gl.enableVertexAttribArray(attr);gl.vertexAttribPointer(attr,3,gl.FLOAT,false,0,0);}gl.drawArrays(gl.TRIANGLES,0,mesh.count);}
+document.getElementById('angleText').textContent=Math.round(angle)+'°';document.getElementById('displacement').innerHTML=(sx-(p.rod_length-p.crank_radius)).toFixed(1)+' <small>mm</small>';angleInput.value=angle;
+}
+angleInput.value=angle;angleInput.addEventListener('input',()=>{angle=+angleInput.value;playing=false;play.textContent='Play';draw();});
+play.onclick=()=>{playing=!playing;play.textContent=playing?'Pause':'Play';};
+document.getElementById('reset').onclick=()=>{angle=45;playing=false;play.textContent='Play';draw();};
+document.getElementById('top').onclick=()=>{azimuth=-Math.PI/2;elevation=Math.PI/2-.001;draw();};
+document.getElementById('iso').onclick=()=>{azimuth=-Math.PI/2+.30;elevation=.82;zoom=1;draw();};
+let drag=null;canvas.onpointerdown=e=>{drag=[e.clientX,e.clientY];canvas.setPointerCapture(e.pointerId);};canvas.onpointermove=e=>{if(!drag)return;azimuth-=(e.clientX-drag[0])*.006;elevation=Math.max(.12,Math.min(1.56,elevation+(e.clientY-drag[1])*.006));drag=[e.clientX,e.clientY];draw();};canvas.onpointerup=()=>drag=null;canvas.onpointercancel=()=>drag=null;canvas.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.55,Math.min(2,zoom*Math.exp(e.deltaY*.001)));draw();},{passive:false});
+new ResizeObserver(draw).observe(canvas);
+function frame(now){if(playing){angle=(angle+Math.min((now-last)/1000,.1)*30)%360;draw();}last=now;requestAnimationFrame(frame);}draw();requestAnimationFrame(frame);
+</script>
+</html>
