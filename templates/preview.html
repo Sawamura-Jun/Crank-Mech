@@ -12,8 +12,54 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:18px;padding:20p
 </style>
 <header><div class="eyebrow">MECHANISM STUDY / METAL PARTS</div><h1>Educational Slider–Crank Mechanism</h1><p>A hand-operated tabletop model for exploring rotary and reciprocating motion.</p></header>
 <main><section class="view" aria-label="3D view of the mechanism"><canvas id="view" aria-label="Slider–crank mechanism. Drag to rotate the view."></canvas><span class="badge">CadQuery model preview · Units: mm</span><div class="hint">Drag to rotate · Scroll to zoom</div><div id="error" role="alert"></div></section>
-<aside class="panel"><h2>Mechanism motion</h2><div class="metrics"><div class="metric">Stroke<strong id="stroke"></strong></div><div class="metric">Slider displacement / from inner dead center<strong id="displacement"></strong></div></div><label for="angle">Crank angle <b id="angleText">45°</b></label><input id="angle" type="range" min="0" max="360" step="1" value="45"><div class="buttons"><button class="primary" id="play">Play</button><button id="reset">Reset to 45°</button></div><div class="buttons"><button id="top">Top view</button><button id="iso">Angled view</button></div><div class="legend"><span><i class="dot" style="background:#2165a6"></i>Crank disk & connecting rod / Aluminum</span><span><i class="dot" style="background:#c99b40"></i>Slider, bushings & hand grip / Brass</span><span><i class="dot" style="background:#adbcc9"></i>Base & guides / Aluminum</span><span><i class="dot" style="background:#626a73"></i>Stepped shafts & fasteners / Steel</span></div><p class="note">This view uses triangulated versions of the STEP geometry. Changing the angle previews the motion; the STEP file retains the angle used when it was generated.</p><a href="assembly.step" download>Download assembly STEP</a></aside></main>
-<footer>Base: 250 × 120 × 14 mm · <span id="dimensions"></span> · Threads are simplified. See <a href="../DESIGN_EN.md">DESIGN_EN.md</a> for machining tolerances and assembly instructions.</footer>
+<aside class="panel"><h2>Mechanism motion</h2><div class="metrics"><div class="metric">Stroke<strong id="stroke"></strong></div><div class="metric">Slider displacement / from inner dead center<strong id="displacement"></strong></div></div><label for="angle">Crank angle <b id="angleText">45°</b></label><input id="angle" type="range" min="0" max="360" step="1" value="45"><div class="buttons"><button class="primary" id="play">Play</button><button id="reset">Reset to 45°</button></div><div class="buttons"><button id="top">Top view</button><button id="iso">Angled view</button></div><div class="legend"><span><i class="dot" style="background:#2165a6"></i>Crank disk & connecting rod / Aluminum</span><span><i class="dot" style="background:#c99b40"></i>Slider, bushings & hand grip / Brass</span><span><i class="dot" style="background:#adbcc9"></i>Base & guides / Aluminum</span><span><i class="dot" style="background:#626a73"></i>Stepped shafts & fasteners / Steel</span></div><p class="note">This view uses triangulated versions of the STEP geometry. Changing the angle previews the motion; the STEP file retains the angle used when it was generated.</p><button id="download-step" type="button">Download assembly STEP</button><p id="download-status" class="note" role="status" aria-live="polite"></p><p id="download-help" class="note" hidden>Check your connection and make sure the repository is public, or <a href="https://github.com/Sawamura-Jun/Crank-Mech/blob/main/output/assembly.step" target="_blank" rel="noopener noreferrer">open STEP on GitHub</a> and use its download control.</p></aside></main>
+<footer>Base: 250 × 120 × 14 mm · <span id="dimensions"></span> · Threads are simplified. See <a href="https://github.com/Sawamura-Jun/Crank-Mech/blob/main/DESIGN_EN.md">DESIGN_EN.md</a> for machining tolerances and assembly instructions.</footer>
+<script>
+"use strict";
+(() => {
+  const button = document.getElementById('download-step');
+  const status = document.getElementById('download-status');
+  const help = document.getElementById('download-help');
+  button.addEventListener('click', async () => {
+    if (button.disabled) return;
+    button.disabled = true;
+    button.textContent = 'Downloading...';
+    status.textContent = 'Fetching assembly.step from GitHub...';
+    help.hidden = true;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 60000);
+    try {
+      const response = await fetch('https://raw.githubusercontent.com/Sawamura-Jun/Crank-Mech/main/output/assembly.step', {signal: controller.signal});
+      if (!response.ok) throw new Error('GitHub returned HTTP ' + response.status + '.');
+      const data = await response.arrayBuffer();
+      if (!new TextDecoder().decode(data.slice(0, 256)).trimStart().startsWith('ISO-10303-21;')) {
+        throw new Error('GitHub did not return a STEP file.');
+      }
+      const url = URL.createObjectURL(new Blob([data], {type: 'application/octet-stream'}));
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'assembly.step';
+      document.body.appendChild(link);
+      try {
+        link.click();
+      } finally {
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+      }
+      status.textContent = 'Download started: assembly.step';
+    } catch (error) {
+      status.textContent = error.name === 'AbortError'
+        ? 'Download timed out. Please try again.'
+        : 'Download failed. ' + error.message;
+      help.hidden = false;
+    } finally {
+      clearTimeout(timeout);
+      button.disabled = false;
+      button.textContent = 'Download assembly STEP';
+    }
+  });
+})();
+</script>
 <script>
 "use strict";
 const model = __MODEL_DATA__;
